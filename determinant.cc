@@ -1,37 +1,38 @@
 #include <iostream>
-#include <vector>
 
 using namespace std;
+
+typedef unsigned int uint;
 
 class Matrix{
     private:
         float** data;
     public:
-        int rows;
-        int cols;
+        uint rows;
+        uint cols;
         bool square;
-        Matrix(unsigned int x, unsigned int y){
+        Matrix(uint x, uint y){
             rows = x;
             cols = y;
-            square = rows == cols;
+            square = x == y;
             data = (float**)malloc(sizeof(float*) * x);
-            for(unsigned int i = 0; i < x; i++){
+            for(uint i = 0; i < x; i++){
                 data[i] = (float*)malloc(sizeof(float) * y);
                 *(data[i]) = 0.0;
             }
         }
         ~Matrix(){
-            for(unsigned int i = 0; i < rows; i++){
+            for(uint i = 0; i < rows; i++){
                 free(data[i]);
             }
             free(data);
         }
-        void set_value(unsigned int row, unsigned int col, float val){
+        void set_value(uint row, uint col, float val){
             data[row][col] = val;
         }
         void print(){
-            for(unsigned int i = 0; i < rows; i++){
-                for(unsigned int j = 0; j < cols; j++){
+            for(uint i = 0; i < rows; i++){
+                for(uint j = 0; j < cols; j++){
                     cout << data[i][j] << "\t";
                 }
                 cout << endl;
@@ -55,8 +56,8 @@ class Matrix{
 
 int main(){
     Matrix mtx = Matrix(2, 2);
-    for(unsigned int i = 0; i < mtx.rows; i++){
-        for(unsigned int j = 0; j < mtx.cols; j++){
+    for(uint i = 0; i < mtx.rows; i++){
+        for(uint j = 0; j < mtx.cols; j++){
             mtx.set_value(i, j, float(i * mtx.cols + j + 1));            
         }
     }
