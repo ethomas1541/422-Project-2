@@ -5,7 +5,9 @@
 int main(){
     using namespace std;
     DerivedSolver test;
-    cout << test.solve(1, 2) << endl;
-    cout << test.verify(1);
+    Eigen::Matrix<int, 3, 3> a;
+    Eigen::Matrix<int, 3, 3> b;
+    cout << test.solve(a, b) << endl;
+    cout << test.verify(a);
     return 0;
 }
