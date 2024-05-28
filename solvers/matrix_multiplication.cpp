@@ -1,5 +1,4 @@
 #include <solvers.hpp>
-#include <sstream>
 #include <stdexcept>
 
 using namespace Eigen;
@@ -12,7 +11,7 @@ std::vector<std::tuple<Matrix<int, Dynamic, Dynamic>, std::string>> MatrixMultip
         throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
     }
 
-    int rowsA = a.rows();
+   int rowsA = a.rows();
     int colsA = a.cols();
     int colsB = b.cols();
 
@@ -21,15 +20,19 @@ std::vector<std::tuple<Matrix<int, Dynamic, Dynamic>, std::string>> MatrixMultip
     // Perform matrix multiplication manually to record each step
     for (int i = 0; i < rowsA; ++i) {
         for (int j = 0; j < colsB; ++j) {
+            bool firstIteration = true;
             for (int k = 0; k < colsA; ++k) {
                 result(i, j) += a(i, k) * b(k, j);
 
                 // Record the step
                 Matrix<int, Dynamic, Dynamic> stepMatrix = result;
-                std::ostringstream description;
-                description << "Multiplying row " << i << " of matrix A by column " << j << " of matrix B. ";
-                description << "Added " << a(i, k) << " * " << b(k, j) << " to result(" << i << ", " << j << ").";
-                steps.emplace_back(stepMatrix, description.str());
+                std::string description;
+                if (firstIteration) {
+                    description = "Multiplying row " + std::to_string(i) + " of matrix A by column " + std::to_string(j) + " of matrix B. ";
+                    firstIteration = false;
+                }
+                description += "Added " + std::to_string(a(i, k)) + " * " + std::to_string(b(k, j)) + " to result(" + std::to_string(i) + ", " + std::to_string(j) + ").";
+                steps.emplace_back(stepMatrix, description);
             }
         }
     }
