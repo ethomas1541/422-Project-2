@@ -4,23 +4,24 @@
 #include <string>
 
 using namespace Eigen;
+
 //abstract solver class
 class Solver{
     public:
-        virtual Matrix <int, Dynamic, Dynamic> solve(Matrix <int, Dynamic, Dynamic> a, Matrix <int, Dynamic, Dynamic> b) = 0;
-        virtual bool verify(Matrix <int, Dynamic, Dynamic> matrix) = 0;
+        virtual Matrix <float, Dynamic, Dynamic> solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b) = 0;
+        virtual bool verify(Matrix <float, Dynamic, Dynamic> matrix) = 0;
 };
 
 //sample solver declaration
 class DerivedSolver: public Solver{
     public:
-        Matrix <int, Dynamic, Dynamic> solve(Matrix <int, Dynamic, Dynamic> a, Matrix <int, Dynamic, Dynamic> b);
-        bool verify(Matrix <int, Dynamic, Dynamic> matrix);
+        Matrix <float, Dynamic, Dynamic> solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
+        bool verify(Matrix <float, Dynamic, Dynamic> matrix);
 };
 
 // Matrix multiplication solver
 class MatrixMultiplicationSolver : public Solver {
     public: 
-        std::vector<std::tuple<Matrix<int, Dynamic, Dynamic>, std::string>> solve(Matrix<int, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b);
-        bool verify(Matrix<int, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b, Matrix<int, Dynamic, Dynamic> result);
+        std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b);
+        bool verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b, Matrix<float, Dynamic, Dynamic> result);
 }
