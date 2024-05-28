@@ -4,8 +4,8 @@
 using namespace Eigen;
 using namespace std;
 
-vector<tuple<Matrix<int, Dynamic, Dynamic>, string>> MatrixMultiplicationSolver::solve(Matrix<int, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b) {
-    vector<tuple<Matrix<int, Dynamic, Dynamic>, string>> steps;
+vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> MatrixMultiplicationSolver::solve(Matrix<float, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b) {
+    vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
 
     int rowsA = a.rows();
     int colsA = a.cols();
