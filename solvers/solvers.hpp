@@ -25,3 +25,9 @@ class MatrixMultiplicationSolver : public Solver {
         std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b, Matrix<float, Dynamic, Dynamic> result);
 };
+
+class RowReductionSolver : public Solver {
+    public: 
+        std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> mat);
+        bool verify(Matrix<float, Dynamic, Dynamic> mat);
+};
