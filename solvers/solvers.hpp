@@ -25,3 +25,9 @@ class MatrixMultiplicationSolver : public Solver {
         std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b, Matrix<float, Dynamic, Dynamic> result);
 };
+
+class DeterminantSolver{
+    public:
+        std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> m);
+        bool verify(Matrix<float, Dynamic, Dynamic> m);
+};
