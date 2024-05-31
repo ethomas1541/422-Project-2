@@ -36,3 +36,10 @@ class RowReductionSolver : public Solver {
         std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> mat);
         bool verify(Matrix<float, Dynamic, Dynamic> mat);
 };
+
+// Inverse Solver
+class InverseSolver : public Solver {
+    public: 
+        std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> mat);
+        bool verify(Matrix<float, Dynamic, Dynamic> mat);
+};
