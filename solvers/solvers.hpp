@@ -30,4 +30,9 @@ class DeterminantSolver{
     public:
         std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> m);
         bool verify(Matrix<float, Dynamic, Dynamic> m);
+
+class RowReductionSolver : public Solver {
+    public: 
+        std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> solve(Matrix<float, Dynamic, Dynamic> mat);
+        bool verify(Matrix<float, Dynamic, Dynamic> mat);
 };
