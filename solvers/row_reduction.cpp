@@ -1,3 +1,35 @@
+/*
+ *	Author: Jerin Spencer & Kaylee Thomas
+ *
+ *	Description:
+ *		Defines functions for dependent class RowReductionSolver.
+ *		
+ *		Apart of the Matrix Solver project which aims to give a
+ *		step-by-step on how to solve linear algebra matrix problems.
+ *
+ *
+ *	Functions:
+ *		solve(Matrix)
+ *			Through a series of row operations, reduces the matrix into redcued echelon form
+ *			while saving intermediate matrices and step descriptions
+ *			
+ *			returns vector
+ *
+ * 		verify(Matrix)
+ * 			Determines if inputted matrix can be roe reduced
+ * 			
+ * 			returns bool
+ *
+ *	History
+ *		5/28/24		Jerin Spencer 	Initial file created
+ *		5/30/24		Jerin Spencer	Implemented row reduction to echeclon form.
+ *									Limit inputs to square matrices.
+ *		6/1/24		Kaylee Thomas	Implemented further reduction to reduced echelon form.
+ *									Allowed for non-square matrix inputs.
+ *
+ * */
+
+
 #include "solvers.hpp"
 #include <stdexcept>
 #include <iostream>
@@ -5,8 +37,7 @@
 using namespace Eigen;
 using namespace std;
 
-//vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat) {
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float, Dynamic, Dynamic> mat) {
+vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat) {
 
 	// Create holder of to contain steps
     vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
@@ -37,8 +68,7 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float,
 	cur_step = "Begin with left-most nonzero column and choose a pivot. Pivots must be to the right and below previous pivot";
 	steps.emplace_back(mat, cur_step);		
 	
-	
-
+	// Traverse matrix diagonally from top-left to bottom-right
 	while(cur_rowi != numRows && cur_coli != numCols){
 		
 		// Reset bool
@@ -146,7 +176,6 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float,
 		cur_coli++; 
 	}
 
-
 		
 	// Go back to previous position within scope of matrix
 	cur_rowi--; 
@@ -154,6 +183,7 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float,
 
 
 	// Zero out above pivot entries until position is outside the matrix
+	// Traverse matrix diagonally from bottom-right to top-left
 	while(cur_rowi != -1 && cur_coli != -1){
 	
 
@@ -204,58 +234,8 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float,
 
     return steps;
 }
-/*
+
 bool RowReductionSolver::verify(Matrix<float, Dynamic, Dynamic> a) {
     // Can row reduce any matrix
     return true;
 }
-*/
-
-/*
-void printVectorContent(vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> sol_steps){
-	//cout << "*** Entering printVectorContent ***\n";
-	//Dprint("\n\n*** Exiting printVectorContent ***\n\n");
-
-	for(auto& tuple: sol_steps){
-		cout << "\n" << get<0>(tuple) << " " << get<1>(tuple) << endl;
-	}
-
-	//Dprint("\n\n*** Exiting printVectorContent ***\n\n");
-	//cout << "*** Exiting printVectorContent ***\n";
-
-}
-
-
-
-int main(){
-
-	//inverseSolver inSol;
-	
-	// Holder to recieve step-by-step
-	vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps_out;
-
-	// Not square Case
-	
-	cout << "Test 3x4 Reduces to identity\n";
-	Matrix<float, 3, 4> MatRect;
-	
-	MatRect << 2.0, 0.0, -1.0, 1.0, 5.0, 1.0, 0.0, 0.0, 0.0, 1.0, 3.0, 0.0;	
-	steps_out = solve(MatRect);
-	printVectorContent(steps_out);
-	
-
-	cout << "Test 3x4 NOT reduced to identity\n";
-	MatRect << 1.0, 2.0, 1.0, 1.0, 2.0, 4.0, 2.0, 0.0, 1.0, 3.0, 5.0, 0.0;	
-	steps_out = solve(MatRect);
-	printVectorContent(steps_out);
-	
-	cout << "Test 4x3\n";
-	Matrix<float, 4, 3> MatRect43;
-	
-	MatRect43 << 1.0, 2.0, -1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, -1.0;	
-	steps_out = solve(MatRect43);
-	printVectorContent(steps_out);
-
-
-}
-*/
