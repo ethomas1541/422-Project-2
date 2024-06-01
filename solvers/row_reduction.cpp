@@ -16,7 +16,7 @@
  *			returns vector
  *
  * 		verify(Matrix)
- * 			Determines if inputted matrix can be roe reduced
+ * 			Determines if inputted matrix can be row reduced
  * 			
  * 			returns bool
  *
@@ -35,14 +35,14 @@
 using namespace Eigen;
 using namespace std;
 
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat) {
+result_vector RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat, Matrix<float, Dynamic, Dynamic> unused){
 
 	// Create holder of to contain steps
     vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
     
-	// Inputted Matrix
+	// Holder for step descritpions
 	string cur_step = "";
-	steps.emplace_back(mat, cur_step);
+	//steps.emplace_back(mat, cur_step);
 	
 	// Get dimension of matrice
     int numRows = mat.rows();
@@ -62,177 +62,207 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve
 	string piv_coli;
 	string pivot;
 
-	// Document Step
-	cur_step = "Begin with left-most nonzero column and choose a pivot. Pivots must be to the right and below previous pivot";
-	steps.emplace_back(mat, cur_step);		
+	// Identity and Zero matrices are already in Reduced Echelon Form	
+	if(mat.isIdentity() || mat.isZero()){
+		cur_step = "Matrix is already in reduced echelon form";
+		steps.emplace_back(mat, cur_step);		
 	
-	// Traverse matrix diagonally from top-left to bottom-right
-	while(cur_rowi != numRows && cur_coli != numCols){
+	}
+
+	// Case for 1x1 Matrix
+	else if(numRows == 1 && numCols == 1){
+		entry = to_string(mat(cur_rowi, cur_coli));
 		
-		// Reset bool
-		nonZeroFound = false;
+		// Document Step
+		cur_step = "Convert entry to 1 by dividing it by itself: " +entry+ " / " +entry+ " = 1";
+		steps.emplace_back(mat, cur_step);		
+		
+		// Convert entry
+		mat(cur_rowi, cur_coli) = 1;
+		
+		// Show Result
+		cur_step = "Final matrix";
+		steps.emplace_back(mat, cur_step);		
+	}
 
-		// Current position is zero and cannot be pivot 
-		if(mat(cur_rowi, cur_coli) == 0){
+	// Gauss Elimination Method
+	else{
+
+		// Document Step
+		cur_step = "Begin with left-most nonzero column and choose a pivot. Pivots must be to the right and below previous pivot";
+		steps.emplace_back(mat, cur_step);		
 			
-			// Search entries below within column for nonzero
-			for(int i = cur_rowi + 1; i < numRows; i++){
+		// Traverse matrix diagonally from top-left to bottom-right
+		while(cur_rowi != numRows && cur_coli != numCols){
 				
-				// Found a non zero entry
-				if(mat(i, cur_coli) != 0){
-					
-					nonZeroFound = true;
-					
-					// Convert values to string for documenting
-					entry_rowi = to_string(i + 1);
-					entry_coli = to_string(cur_rowi + 1);
-					piv_rowi = to_string(cur_rowi + 1);
-				
-					// Document Steps
-					cur_step = "Select nonzero entry to become pivot: ("+entry_rowi+","+entry_coli+")";
-					steps.emplace_back(mat, cur_step);
-					
-					
-					// Swap rows so that pivot position is on top
-					mat.row(i).swap(mat.row(cur_rowi));
+			// Reset bool
+			nonZeroFound = false;
 
+			// Current position is zero and cannot be pivot 
+			if(mat(cur_rowi, cur_coli) == 0){
 					
-					// Documnet Step
-					cur_step = "Move entry in row" + entry_rowi +" into pivot position in row"
-								+ piv_rowi +" by swapping the rows";
-					steps.emplace_back(mat, cur_step);
+				// Search entries below within column for nonzero
+				for(int i = cur_rowi + 1; i < numRows; i++){
+						
+					// Found a non zero entry
+					if(mat(i, cur_coli) != 0){
+							
+						nonZeroFound = true;
+							
+						// Convert values to string for documenting
+						entry_rowi = to_string(i + 1);
+						entry_coli = to_string(cur_rowi + 1);
+						piv_rowi = to_string(cur_rowi + 1);
+						
+						// Document Steps
+						cur_step = "Select nonzero entry to become pivot: ("+entry_rowi+","+entry_coli+")";
+						steps.emplace_back(mat, cur_step);
+							
+							
+						// Swap rows so that pivot position is on top
+						mat.row(i).swap(mat.row(cur_rowi));
+
+							
+						// Documnet Step
+						cur_step = "Move entry in row" + entry_rowi +" into pivot position in row"
+										+ piv_rowi +" by swapping the rows";
+						steps.emplace_back(mat, cur_step);
+							
+						break;
+					}
 					
-					break;
 				}
-			
+					
+				// Non-zero entry was not found
+				if(!nonZeroFound){
+						
+					// Move to next column but same row
+					cur_coli++;
+					continue;
+				}
+
 			}
-			
-			// Non-zero entry was not found
-			if(!nonZeroFound){
-				
-				// Move to next column but same row
-				cur_coli++;
-				continue;
-			}
+			// Current position is nonzero and can be pivot 
+			else{
+					
+				// Convert values to string to document step
+				pivot = to_string(mat(cur_rowi, cur_coli));
+				piv_rowi = to_string(cur_rowi + 1);
+				piv_coli = to_string(cur_coli + 1);
 
-		}
-		// Current position is nonzero and can be pivot 
-		else{
-			
-			// Convert values to string to document step
-			pivot = to_string(mat(cur_rowi, cur_coli));
-			piv_rowi = to_string(cur_rowi + 1);
-			piv_coli = to_string(cur_coli + 1);
-
-			// Document Step
-			cur_step = "Selected pivot is " +pivot+" in position ("+piv_rowi+","+piv_coli+")";
-			steps.emplace_back(mat, cur_step);		
+				// Document Step
+				cur_step = "Selected pivot is " +pivot+" in position ("+piv_rowi+","+piv_coli+")";
+				steps.emplace_back(mat, cur_step);		
 
 
-			// Convert pivot to 1 by dividing whole row by pivot	
-			if (mat(cur_rowi, cur_coli) != 1){
+				// Convert pivot to 1 by dividing whole row by pivot	
+				if (mat(cur_rowi, cur_coli) != 1){
 
-				float scalar = 1/mat(cur_rowi, cur_coli);;
-				mat.row(cur_rowi) *= scalar;
-				
-				//Document Step	
-				cur_step = "Convert pivot " + pivot +" into 1 by multiplying row"
-							+ piv_rowi +" by (1/pivot) = " +to_string(scalar);
+					float scalar = 1/mat(cur_rowi, cur_coli);;
+					mat.row(cur_rowi) *= scalar;
+						
+					//Document Step	
+					cur_step = "Convert pivot " + pivot +" into 1 by multiplying row"
+									+ piv_rowi +" by (1/pivot) = " +to_string(scalar);
+					steps.emplace_back(mat, cur_step);
+				}
+					
+				// Document Step
+				cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
 				steps.emplace_back(mat, cur_step);
-			}
-			
-			// Document Step
-			cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
-			steps.emplace_back(mat, cur_step);
 
-			// Zero out entries below the pivot 
-			for(int i = cur_rowi + 1; i < numRows; i++){
-				
-				if(mat(i, cur_coli) != 0){
-					
-					// Convert values to string to document step
-					entry = to_string(mat(i, cur_coli));
-					entry_rowi = to_string(i+1);
-					entry_coli = to_string(cur_coli + 1);
+				// Zero out entries below the pivot 
+				for(int i = cur_rowi + 1; i < numRows; i++){
+						
+					if(mat(i, cur_coli) != 0){
+							
+						// Convert values to string to document step
+						entry = to_string(mat(i, cur_coli));
+						entry_rowi = to_string(i+1);
+						entry_coli = to_string(cur_coli + 1);
 
-					// Multiple pivot row with entry below and subtract from row
-					mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
-					
-				
-					// Document Step
-					cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
-								" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
-					steps.emplace_back(mat, cur_step);
-					
+						// Multiple pivot row with entry below and subtract from row
+						mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
+							
+						
+						// Document Step
+						cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
+										" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
+						steps.emplace_back(mat, cur_step);
+							
+					}
 				}
+
 			}
 
+			// Move right and down form current position
+			cur_rowi++; 
+			cur_coli++; 
 		}
 
-		// Move right and down form current position
-		cur_rowi++; 
-		cur_coli++; 
-	}
-
-		
-	// Go back to previous position within scope of matrix
-	cur_rowi--; 
-	cur_coli--; 
+				
+		// Go back to previous position within scope of matrix
+		cur_rowi--; 
+		cur_coli--; 
 
 
-	// Zero out above pivot entries until position is outside the matrix
-	// Traverse matrix diagonally from bottom-right to top-left
-	while(cur_rowi != -1 && cur_coli != -1){
-	
-
-		// Current position is not a pivot, 
-		if(mat(cur_rowi, cur_coli) != 1){
+		// Zero out above pivot entries until position is outside the matrix
+		// Traverse matrix diagonally from bottom-right to top-left
+		while(cur_rowi != -1 && cur_coli != -1){
 			
-			// Move to left column same row
+
+			// Current position is not a pivot, 
+			if(mat(cur_rowi, cur_coli) != 1){
+					
+				// Move to left column same row
+				cur_coli--;
+				continue;
+			}	
+
+
+			// Current position is a pivot
+			else if(mat(cur_rowi, cur_coli) == 1){
+
+				// Document Step
+				cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
+				steps.emplace_back(mat, cur_step);
+
+				// Zero out above entries within Column
+				for(int i = cur_rowi - 1; i >= 0; i--){
+						
+					if(mat(i, cur_coli) != 0){
+							
+						// Convert values to string to document step
+						entry = to_string(mat(i, cur_coli));
+						entry_rowi = to_string(i+1);
+						entry_coli = to_string(cur_coli + 1);
+							
+						// Multiple pivot row with entry below and subtract from row
+						mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
+							
+						// Document Step
+						cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
+										" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
+						steps.emplace_back(mat, cur_step);
+							
+					}
+				}
+
+			}
+
+			// Move left and up (diagonal)
+			cur_rowi--;
 			cur_coli--;
-			continue;
-		}	
-
-
-		// Current position is a pivot
-		else if(mat(cur_rowi, cur_coli) == 1){
-
-			// Document Step
-			cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
-			steps.emplace_back(mat, cur_step);
-
-			// Zero out above entries within Column
-			for(int i = cur_rowi - 1; i >= 0; i--){
-				
-				if(mat(i, cur_coli) != 0){
-					
-					// Convert values to string to document step
-					entry = to_string(mat(i, cur_coli));
-					entry_rowi = to_string(i+1);
-					entry_coli = to_string(cur_coli + 1);
-					
-					// Multiple pivot row with entry below and subtract from row
-					mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
-					
-					// Document Step
-					cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
-								" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
-					steps.emplace_back(mat, cur_step);
-					
-				}
-			}
-
 		}
-
-		// Move left and up (diagonal)
-		cur_rowi--;
-		cur_coli--;
 	}
 
-    return steps;
+	return steps;
 }
 
 bool RowReductionSolver::verify(Matrix<float, Dynamic, Dynamic> a) {
-    // Can row reduce any matrix
-    return true;
+
+	// Can row reduce any matrix
+	    
+
+	return true;
 }
