@@ -141,9 +141,9 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 		}
 			
 		
-		// 3x3 Case 
-		else if(dim == 3){	
-			// row reduce with unit vectors [m | e1] , [m | e2] , [m | e3]	
+		// NxN Case where N >= 3 
+		else{	
+			// row reduce with unit vectors [m | e1] , [m | e2] , ... , [m | eN]	
 			
 			// Create matrix to save steps, initially filled with zeros
 			Matrix<float, Dynamic, Dynamic> stepMatrix;
