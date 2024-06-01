@@ -1,5 +1,5 @@
 /*
- *	Author: Kaylee Thomas 5/31/2024
+ *	Author: Kaylee Thomas
  *
  * 	Description
  * 		Defines dependent Class InverseSolver functions
@@ -12,6 +12,12 @@
  *		verify(Matrix)
  *			Determines if inputted matrix is invertible
  *			returns bool
+ *
+ *	History
+ *		5/28/24	Kaylee Thomas	Initial Creation
+ *		5/31/24	Kaylee Thomas	Implemented ability to solve 1x1 and 2x2 matrices
+ *		6/1/24	Kaylee Thomas	Implemented ability to solve 3x3 matrices
+ *
  * */
 #include "solvers.hpp"
 #include <iostream>
@@ -23,7 +29,6 @@ using namespace std;
 
 vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matrix<float, Dynamic, Dynamic> inp_Mat){
 	/* Finds and describes the steps taken to get the inverse of a matrix */
-	
 
 	// create holder for steps
 	vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
@@ -32,7 +37,7 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 	//description = "Inputted Matrix";
 	//steps.emplace_back(inp_Mat, description);
 	
-	// check if invertible
+	// Not Invertible
 	if(!verify(inp_Mat)){
 	
 		description = "Matrix is not invertible";
@@ -40,22 +45,19 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 	
 	}
 	
-	// check if identity matrix
+	// Invertible and Identity matrix
 	else if(inp_Mat.isIdentity()){
-		Dprint("\tMatrix is identity\n");
 
 		// no further steps need, inverse of identity is identity
 		description = "The inverse of an identity matrix is itself";
 		steps.emplace_back(inp_Mat, description);
 	
 	}
+	// Invertible and Not Identity Matix
 	else{
-		Dprint("\tMatrix is NOT identity\n");
 
 		// Get dimensions of inputted matrix
 		int dim = inp_Mat.rows();
-			
-		Dprint("\tdim = "); Dprint(dim); Dprint("\n");
 
 		// Create holder for inverse matrix filled with zeros
 		Matrix<float, Dynamic, Dynamic> inverse = Matrix<float, Dynamic, Dynamic>::Zero(inp_Mat.rows(), inp_Mat.cols());
@@ -68,7 +70,7 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 		// 1x1 Case
 		if(dim == 1){
 			
-			// [a] -> [1/a]
+			// Formula:	[a] -> [1/a]
 			float a = inp_Mat(0,0);	
 			string a_str = to_string(a);
 			
@@ -96,15 +98,15 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 		// 2x2 Case
 		else if(dim == 2){
 				
-			// [a, b ; c, d] -> 1/(ad-bc)[d, -b; -c, a]
+			// Formula:	[a, b ; c, d] -> 1/(ad-bc)[d, -b; -c, a]
 
-			// get individual values
+			// Get individual values
 			float a = inp_Mat(0,0);
 			float b = inp_Mat(0,1);
 			float c = inp_Mat(1,0);
 			float d = inp_Mat(1,1);
 
-				
+			// Document Step				
 			description = "Let a bet the top-left, b be the top-right, c be bottom-left, and d be bottom-left";
 			steps.emplace_back(inp_mat, description);
 			
@@ -121,7 +123,6 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 
 			description = "Find the determinant by calculating ad-bc = " 
 							+ str_a + "*" + str_b + "-" + str_d + "*" + str_c + " = " + det_str;
-			// TODO Make matrix in step NULL
 			steps.emplace_back(inverse, description);
 				
 			// input values into inverse
@@ -158,38 +159,46 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 			
 			// Create Matrix to hold row reduced step mattix
 			Matrix<float, Dynamic, Dynamic> rr_stepMatrix;
-			rr_stepMatrix = Matrix<float, Dynamic, Dynamic>::Zero(inp_Mat.rows(), inp_Mat.cols()+1);
-				
+		
+
+			// Create object from sibling class
+			RowReductionSolver rrsolver;
+
+
+			// Holder for steps from rowReductionSolver
+			vector<tuple<Matrix<float, Dynamic, Dynamic>>, string> rowReduce_steps;
+			tuple<Matrix<float, Dynamic, Dynamic>, string> last_rr_step;
+			
+
 			for(int i = 0; i < dim; i++){
 				// Make last column unit vector
 				stepMatrix(i,dim) = 1;
 				
+				// Document step
 				description = "Create an augmented matrix with given matrix and unit vector e"
 								+ to_string(i+1) + " as right-most column";
 				steps.emplace_back(stepMatrix, description);
 
-				// row reduce
-				// FIXME use rowReduceSolver to get 			
-				
-				// rowReduceSteps = rowReduce(stepMatrix);
-				// get final matrix from rowReduceSteps;
-				
-				// FIXME Remove later, just to see if copy column correctly
-				for(int k = 0; k < dim; k++){
-					rr_stepMatrix(k, dim) = i+k+1;
-				}
+				// Row reduce to reduce echelon form
+				rowReduce_steps = rrsolver.solve(stepMatrix);
 
+				// Get final matrix from the last step of rowReduce_steps
+				last_step = rowReduce_steps.back();
+				rr_stepMatrix = get<0>(last_step);
+				
+
+				// Document step
 				description = "Convert augmented matrix to reduced echelon form using row operations";
 				steps.emplace_back(rr_stepMatrix, description);
 				
 				
-				// fill inverse matrix col k with last column of rref
+				// Fill inverse matrix col k with last column of rr_stepMatrix
 				for(int j = 0; j < dim; j++){
 					inverse(j,i) = rr_stepMatrix(j,dim);
 
 				}
 				
-				// Add to steps
+				// Document step
 				description = "Take right-most column of the augmented reduced form matrix and place it in column "
 								+ to_string(i+1);
 				steps.emplace_back(inverse, description);
