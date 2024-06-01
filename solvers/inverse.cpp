@@ -27,7 +27,7 @@ using namespace Eigen;
 using namespace std;
 
 
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matrix<float, Dynamic, Dynamic> inp_Mat){
+result_vector InverseSolver::solve(Matrix<float, Dynamic, Dynamic> inp_Mat, Matrix<float, Dynamic, Dynamic> unused){
 	/* Finds and describes the steps taken to get the inverse of a matrix */
 
 	// create holder for steps
@@ -107,8 +107,9 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 			float d = inp_Mat(1,1);
 
 			// Document Step				
-			description = "Let a bet the top-left, b be the top-right, c be bottom-left, and d be bottom-left";
-			steps.emplace_back(inp_mat, description);
+			description = "Let a = top-left = "+to_string(a)+"; b = top-right = "+to_string(b)+
+							"; c = bottom-left = "+to_string(c)+"; d = bottom-left = " + to_string(d);
+			steps.emplace_back(inp_Mat, description);
 			
 
 			// calculate det (ad-bc)
@@ -121,22 +122,34 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 			string str_d = to_string(d);
 			string det_str = to_string(det);
 
-			description = "Find the determinant by calculating ad-bc = " 
-							+ str_a + "*" + str_b + "-" + str_d + "*" + str_c + " = " + det_str;
-			steps.emplace_back(inverse, description);
+			description = "Find the determinant by calculating ad-bc = ( " 
+							+ str_a + " * " + str_d + " ) - ( " + str_b + " * " + str_c + " ) = " + det_str;
+			steps.emplace_back(inp_Mat, description);
 				
-			// input values into inverse
+			// Swap and negate entries according to formula
+			inverse(0,0) = d;
+			inverse(0,1) = (-b);
+			inverse(1,0) = (-c);
+			inverse(1,1) = a;
+
+			// Document Step
+			description = "Swap a and d. Negate b and c";
+			steps.emplace_back(inverse, description);
+			
+			// Muliply matrix by 1/determinant
 			if(det != 0){
-				//float scalar = 1/det;
-				inverse(0,0) = (1/det) * d;
-				inverse(0,1) = (1/det) * (-b);
-				inverse(1,0) = (1/det) * (-c);
-				inverse(1,1) = (1/det) * a;
+				float scalar = 1/det;
+				inverse *= scalar;		
+
+				// Document Step
+				description = "Muliply the whole matrix with 1/det = "+ to_string(scalar);
+				steps.emplace_back(inverse, description);
+
 			}
 				
 			// Document Step
-			description = "Swap a and d, negate b and c, and then muliply each entry with 1/"+ det_str;
-			steps.emplace_back(inverse, description);
+			//description = "Swap a and d, negate b and c, and then muliply each entry with 1/"+ det_str;
+			//steps.emplace_back(inverse, description);
 				
 		}
 			
@@ -166,7 +179,8 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 
 
 			// Holder for steps from rowReductionSolver
-			vector<tuple<Matrix<float, Dynamic, Dynamic>>, string> rowReduce_steps;
+			//vector<tuple<Matrix<float, Dynamic, Dynamic>>, string> rowReduce_steps;
+			result_vector rowReduce_steps;
 			tuple<Matrix<float, Dynamic, Dynamic>, string> last_rr_step;
 			
 
@@ -180,11 +194,11 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> InverseSolver::solve(Matr
 				steps.emplace_back(stepMatrix, description);
 
 				// Row reduce to reduce echelon form
-				rowReduce_steps = rrsolver.solve(stepMatrix);
+				rowReduce_steps = rrsolver.solve(stepMatrix, stepMatrix);
 
 				// Get final matrix from the last step of rowReduce_steps
-				last_step = rowReduce_steps.back();
-				rr_stepMatrix = get<0>(last_step);
+				last_rr_step = rowReduce_steps.back();
+				rr_stepMatrix = get<0>(last_rr_step);
 				
 
 				// Document step
