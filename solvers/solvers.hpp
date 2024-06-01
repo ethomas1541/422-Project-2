@@ -36,13 +36,13 @@ class DeterminantSolver : public Solver{
 
 class RowReductionSolver : public Solver {
     public: 
-        result_vector solve(Matrix<float, Dynamic, Dynamic> mat);
+        result_vector solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> mat);
 };
 
 // Inverse Solver
 class InverseSolver : public Solver {
     public: 
-        result_vector solve(Matrix<float, Dynamic, Dynamic> mat);
+        result_vector solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> mat);
 };
