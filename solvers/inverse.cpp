@@ -8,7 +8,7 @@
  *		step-by-step on how to solve linear algebra matrix problems.
  *
  *	Functions:
- *		solve(Matrix)
+ *		solve(Matrix, Matrix)
  *			Finds inverse and saves intermediary matrices and step descriptions
  *			returns vector
  *
