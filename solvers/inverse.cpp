@@ -4,6 +4,9 @@
  * 	Description
  * 		Defines dependent Class InverseSolver functions
  *
+ *		Apart of the Matrix Solver project which aims to give a
+ *		step-by-step on how to solve linear algebra matrix problems.
+ *
  *	Functions:
  *		solve(Matrix)
  *			Finds inverse and saves intermediary matrices and step descriptions
