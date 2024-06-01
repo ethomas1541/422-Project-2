@@ -1,10 +1,43 @@
-#include <eigen/Eigen/Dense>
+/*
+ *	Author: Elijah Thomas
+ *
+ *	Description:
+ *		Defines functions for derived class DeterminantSolver
+ *
+ *	Functions:
+ *		minor(Matrix, row, col)
+ *          Eliminates the row and column specified by two respective integers, giving a minor matrix of area
+ *          (n-1)^2 compared to an original n^2 matrix.
+ *
+ * 		det(Matrix, result_vector)
+ *          Finds the determinant of a square matrix, given the well-known cofactor expansion algorithm. Uses top-down
+ *          recursion when needed.
+ * 
+ *      verify(Matrix)
+ *          Returns true if the matrix is square, false otherwise. Matrix has a determinant if and only if it is square.
+ * 
+ *      solve(Matrix, Matrix (UNUSED))
+ *          Wrapper for the det function, mostly to avoid a function signature conflict with the base class.
+ *          Takes two matrices (just like every other solver subclass) but discards one, returns a 
+ *          stack-allocated result_vector object that has captured information from the det function.
+ *          
+ *
+ *	History
+ *		5/27/24 Elijah Thomas   Initial file created
+ *      5/28/24 Elijah Thomas   Migrated to solvers/determinant.cpp from determinant.cc
+ *      5/31/24 Elijah Thomas   Finished implementation
+ *      6/1/24  Elijah Thomas   Added comments
+ *      6/2/24  Elijah Thomas   Final modifications
+ *
+ * */
+
 #include "solvers.hpp"
 #include <iostream>
 
 using namespace Eigen;
 using namespace std;
 
+// That is one long type name - so I truncated it here. Don't want to reuse all that text.
 typedef vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> result_vector;
 
 // Take the minor matrix, as given by a matrix and row, col coordinate pair.
