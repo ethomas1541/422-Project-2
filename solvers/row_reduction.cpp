@@ -1,5 +1,5 @@
 /*
- *	Author: Jerin Spencer & Kaylee Thomas
+ *	Author: Kaylee Thomas & Jerin Spencer
  *
  *	Description:
  *		Defines functions for dependent class RowReductionSolver.
@@ -22,10 +22,8 @@
  *
  *	History
  *		5/28/24		Jerin Spencer 	Initial file created
- *		5/30/24		Jerin Spencer	Implemented row reduction to echeclon form.
- *									Limit inputs to square matrices.
- *		6/1/24		Kaylee Thomas	Implemented further reduction to reduced echelon form.
- *									Allowed for non-square matrix inputs.
+ *		5/30/24		Jerin Spencer	Reduces to echeclon form, stops if hits a zero. Inputs limited to square matrices. 
+ *		6/1/24		Kaylee Thomas	Implemented further reduction to reduced echelon form. Allowed for non-square matrix inputs.
  *
  * */
 
@@ -225,7 +223,6 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve
 			}
 
 		}
-
 
 		// Move left and up (diagonal)
 		cur_rowi--;
