@@ -1,48 +1,261 @@
 #include "solvers.hpp"
 #include <stdexcept>
+#include <iostream>
 
 using namespace Eigen;
 using namespace std;
 
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat) {
-    //initial set up 
-    int r = mat.rows();
-    vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
-    string cur_step = "";
-    tuple push = {mat, cur_step};
-    //for each row
-    for(int row = 0; row < r; row++)
-    {   //for each row below this row
-        string cur_row = to_string(row);
-        string cur_piv = to_string(mat(row,row));
+//vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> RowReductionSolver::solve(Matrix<float, Dynamic, Dynamic> mat) {
+vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> rowRedsolve(Matrix<float, Dynamic, Dynamic> mat) {
 
-        for(int brow = row; brow < r; brow++ )
-        {
-            string bel_row = to_string(brow);
-            string bel_piv = to_string(mat(brow,row));
-            if(mat(row,row) != 0)
-            {
-                float factor = -1*(mat(brow,row)/mat(row,row));
-                //multiply it by factor, then add to brow
-                mat.row(brow) += factor * mat.row(row);
-                //multiply row "row" by "-(row,row)/(brow,row)" and add it to row "brow"
-                cur_step = "multply row " + cur_row + " by " + bel_piv + "/" + cur_piv + " and add to " + bel_row;
-                push = {mat, cur_step};
-                steps.push_back(push);
-            }
-            else
-            {
-                cur_step = "a pivot position is 0, thefore this matrix can not be reduced further.";
-                push = {mat, cur_step};
-                steps.push_back(push);
-                return steps;
-            }
-        }
-    }
+	// Create holder of to contain steps
+    vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
+    
+	// Inputted Matrix
+	string cur_step = "";
+	steps.emplace_back(mat, cur_step);
+	
+	// Get dimension of matrice
+    int numRows = mat.rows();
+	int numCols = mat.cols();
+
+	// Starting position is top left corner
+	int cur_rowi = 0; 
+	int cur_coli = 0; 
+
+	bool nonZeroFound;
+	
+	// String holders for documenting steps
+	string entry;
+	string entry_rowi;
+	string entry_coli;
+	string piv_rowi;
+	string piv_coli;
+	string pivot;
+
+	// Document Step
+	cur_step = "Begin with left-most nonzero column and choose a pivot. Pivots must be to the right and below previous pivot";
+	steps.emplace_back(mat, cur_step);		
+	
+	
+
+	while(cur_rowi != numRows && cur_coli != numCols){
+		
+		// Reset bool
+		nonZeroFound = false;
+
+		// Current position is zero and cannot be pivot 
+		if(mat(cur_rowi, cur_coli) == 0){
+			
+			// Search entries below within column for nonzero
+			for(int i = cur_rowi + 1; i < numRows; i++){
+				
+				// Found a non zero entry
+				if(mat(i, cur_coli) != 0){
+					
+					nonZeroFound = true;
+					
+					// Convert values to string for documenting
+					entry_rowi = to_string(i + 1);
+					entry_coli = to_string(cur_rowi + 1);
+					piv_rowi = to_string(cur_rowi + 1);
+				
+					// Document Steps
+					cur_step = "Select nonzero entry to become pivot: ("+entry_rowi+","+entry_coli+")";
+					steps.emplace_back(mat, cur_step);
+					
+					
+					// Swap rows so that pivot position is on top
+					mat.row(i).swap(mat.row(cur_rowi));
+
+					
+					// Documnet Step
+					cur_step = "Move entry in row" + entry_rowi +" into pivot position in row"
+								+ piv_rowi +" by swapping the rows";
+					steps.emplace_back(mat, cur_step);
+					
+					break;
+				}
+			
+			}
+			
+			// Non-zero entry was not found
+			if(!nonZeroFound){
+				
+				// Move to next column but same row
+				cur_coli++;
+				continue;
+			}
+
+		}
+		// Current position is nonzero and can be pivot 
+		else{
+			
+			// Convert values to string to document step
+			pivot = to_string(mat(cur_rowi, cur_coli));
+			piv_rowi = to_string(cur_rowi + 1);
+			piv_coli = to_string(cur_coli + 1);
+
+			// Document Step
+			cur_step = "Selected pivot is " +pivot+" in position ("+piv_rowi+","+piv_coli+")";
+			steps.emplace_back(mat, cur_step);		
+
+
+			// Convert pivot to 1 by dividing whole row by pivot	
+			if (mat(cur_rowi, cur_coli) != 1){
+
+				float scalar = 1/mat(cur_rowi, cur_coli);;
+				mat.row(cur_rowi) *= scalar;
+				
+				//Document Step	
+				cur_step = "Convert pivot " + pivot +" into 1 by multiplying row"
+							+ piv_rowi +" by (1/pivot) = " +to_string(scalar);
+				steps.emplace_back(mat, cur_step);
+			}
+			
+			// Document Step
+			cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
+			steps.emplace_back(mat, cur_step);
+
+			// Zero out entries below the pivot 
+			for(int i = cur_rowi + 1; i < numRows; i++){
+				
+				if(mat(i, cur_coli) != 0){
+					
+					// Convert values to string to document step
+					entry = to_string(mat(i, cur_coli));
+					entry_rowi = to_string(i+1);
+					entry_coli = to_string(cur_coli + 1);
+
+					// Multiple pivot row with entry below and subtract from row
+					mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
+					
+				
+					// Document Step
+					cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
+								" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
+					steps.emplace_back(mat, cur_step);
+					
+				}
+			}
+
+		}
+
+		// Move right and down form current position
+		cur_rowi++; 
+		cur_coli++; 
+	}
+
+
+		
+	// Go back to previous position within scope of matrix
+	cur_rowi--; 
+	cur_coli--; 
+
+
+	// Zero out above pivot entries until position is outside the matrix
+	while(cur_rowi != -1 && cur_coli != -1){
+	
+
+		// Current position is not a pivot, 
+		if(mat(cur_rowi, cur_coli) != 1){
+			
+			// Move to left column same row
+			cur_coli--;
+			continue;
+		}	
+
+
+		// Current position is a pivot
+		else if(mat(cur_rowi, cur_coli) == 1){
+
+			// Document Step
+			cur_step = "Within column"+piv_coli+" convert the entries below the pivot into zeroes";
+			steps.emplace_back(mat, cur_step);
+
+			// Zero out above entries within Column
+			for(int i = cur_rowi - 1; i >= 0; i--){
+				
+				if(mat(i, cur_coli) != 0){
+					
+					// Convert values to string to document step
+					entry = to_string(mat(i, cur_coli));
+					entry_rowi = to_string(i+1);
+					entry_coli = to_string(cur_coli + 1);
+					
+					// Multiple pivot row with entry below and subtract from row
+					mat.row(i) -= mat.row(cur_rowi) * mat(i, cur_coli);
+					
+					// Document Step
+					cur_step = "Convert entry (" +entry_rowi+","+entry_coli+") into zero by replacing row"+entry_rowi+
+								" with [row"+entry_rowi+" - (row"+piv_rowi+" * "+entry+")]";
+					steps.emplace_back(mat, cur_step);
+					
+				}
+			}
+
+		}
+
+
+		// Move left and up (diagonal)
+		cur_rowi--;
+		cur_coli--;
+	}
+
     return steps;
 }
-
+/*
 bool RowReductionSolver::verify(Matrix<float, Dynamic, Dynamic> a) {
-    // this program can only reduce square matrices
-    return (a.rows() == a.cols());
+    // Can row reduce any matrix
+    return true;
 }
+*/
+
+/*
+void printVectorContent(vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> sol_steps){
+	//cout << "*** Entering printVectorContent ***\n";
+	//Dprint("\n\n*** Exiting printVectorContent ***\n\n");
+
+	for(auto& tuple: sol_steps){
+		cout << "\n" << get<0>(tuple) << " " << get<1>(tuple) << endl;
+	}
+
+	//Dprint("\n\n*** Exiting printVectorContent ***\n\n");
+	//cout << "*** Exiting printVectorContent ***\n";
+
+}
+
+
+
+int main(){
+
+	//inverseSolver inSol;
+	
+	// Holder to recieve step-by-step
+	vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps_out;
+
+	// Not square Case
+	
+	cout << "Test 3x4 Reduces to identity\n";
+	Matrix<float, 3, 4> MatRect;
+	
+	MatRect << 2.0, 0.0, -1.0, 1.0, 5.0, 1.0, 0.0, 0.0, 0.0, 1.0, 3.0, 0.0;	
+	steps_out = solve(MatRect);
+	printVectorContent(steps_out);
+	
+
+	cout << "Test 3x4 NOT reduced to identity\n";
+	MatRect << 1.0, 2.0, 1.0, 1.0, 2.0, 4.0, 2.0, 0.0, 1.0, 3.0, 5.0, 0.0;	
+	steps_out = solve(MatRect);
+	printVectorContent(steps_out);
+	
+	cout << "Test 4x3\n";
+	Matrix<float, 4, 3> MatRect43;
+	
+	MatRect43 << 1.0, 2.0, -1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, -1.0;	
+	steps_out = solve(MatRect43);
+	printVectorContent(steps_out);
+
+
+}
+*/
