@@ -1,10 +1,34 @@
-#include <solvers.hpp>
+/*
+ *	Author: Drew Tweedale
+ *
+ * 	Description
+ * 		Defines dependent Class Matrix Multiplication functions
+ *
+ *	Functions:
+ *		solve(Matrix, Matrix)
+ *			Find the matrix product and returns intermediary matricies.
+ *			returns vector
+ *
+ *		verify(Matrix)
+ *			Determines if inputted matrices are multipliable.
+ *			returns bool
+ *
+ *	History
+ *		5/28/24	Drew Tweedale	Initial Creation
+ *		5/30/24 Drew Tweedale   Finished implementation.
+ *
+ * */
+
+#include <iostream>
+#include "solvers.hpp"
 #include <stdexcept>
+#include <iomanip>
+#include <cmath>
 
 using namespace Eigen;
 using namespace std;
 
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> MatrixMultiplicationSolver::solve(Matrix<float, Dynamic, Dynamic> a, Matrix<int, Dynamic, Dynamic> b) {
+vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> MatrixMultiplicationSolver::solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b) {
     vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> steps;
 
     int rowsA = a.rows();
@@ -27,7 +51,17 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> MatrixMultiplicationSolve
                     description = "Multiplying row " + to_string(i) + " of matrix A by column " + to_string(j) + " of matrix B. ";
                     firstIteration = false;
                 }
-                description += "Added " + to_string(a(i, k)) + " * " + to_string(b(k, j)) + " to result(" + to_string(i) + ", " + to_string(j) + ").";
+                // Format numbers properly
+                auto formatNumber = [](float num) {
+                    if (fabs(num - round(num)) < 1e-6) {
+                        return to_string(static_cast<int>(num));
+                    } else {
+                        ostringstream oss;
+                        oss << fixed << setprecision(6) << num;
+                        return oss.str();
+                    }
+                };
+                description += "Added " + formatNumber(a(i, k)) + " * " + formatNumber(b(k, j)) + " to result(" + to_string(i) + ", " + to_string(j) + ").";
                 steps.emplace_back(stepMatrix, description);
             }
         }
@@ -40,5 +74,8 @@ bool MatrixMultiplicationSolver::verify(Matrix<float, Dynamic, Dynamic> a, Matri
     // Ensure matrices can be multiplied
     if (a.cols() != b.rows()) {
         throw invalid_argument("Matrix dimensions do not match for multiplication.");
+        return false;
     }
+    return true;
 }
+
