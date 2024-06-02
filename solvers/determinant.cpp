@@ -1,4 +1,5 @@
 #include <eigen/Eigen/Dense>
+#include "solvers.hpp"
 #include <iostream>
 
 using namespace Eigen;
@@ -67,11 +68,11 @@ float det(Matrix<float, Dynamic, Dynamic> m, result_vector* v) {
     return determinant;
 }
 
-bool verify(Matrix<float, Dynamic, Dynamic> m){
+bool DeterminantSolver::verify(Matrix<float, Dynamic, Dynamic> m){
     return m.rows() == m.cols();
 }
 
-result_vector solve(Matrix<float, Dynamic, Dynamic> m){
+result_vector DeterminantSolver::solve(Matrix<float, Dynamic, Dynamic> m, Matrix<float, Dynamic, Dynamic> unused){
     result_vector ret;
     det(m, &ret);
     return ret;
