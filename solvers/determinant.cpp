@@ -8,10 +8,12 @@
  *		minor(Matrix, row, col)
  *          Eliminates the row and column specified by two respective integers, giving a minor matrix of area
  *          (n-1)^2 compared to an original n^2 matrix.
+ *          returns a matrix with one less row and one less column than the one passed to the function.
  *
  * 		det(Matrix, result_vector)
  *          Finds the determinant of a square matrix, given the well-known cofactor expansion algorithm. Uses top-down
  *          recursion when needed.
+ *          returns a float.
  * 
  *      verify(Matrix)
  *          Returns true if the matrix is square, false otherwise. Matrix has a determinant if and only if it is square.
