@@ -1,3 +1,40 @@
+/*
+ * 	Author: Gus Cochran, Elijah Thomas, & Kaylee Thomas
+ *
+ *	Description:
+ *		
+ *		Test matrix operation solvers defined in solvers.hpp
+ *
+ *		A part of the Matrix Solver project which aims to give a
+ *		step-by-step on how to solve linear algebra matrix problems.
+ *
+ *	Function:
+ *		
+ *		printVectorTuple(result_vector)
+ *			result_vector is type alias for vector<tuple<Matrix<float, Dynamic, Dynamic>, string>>
+ *			Prints the contents out the contents of the vector filled with tuples to standard output
+ *
+ *			returns void
+ *
+ *
+ *		main()
+ *			Creates objects from classes declared in solvers.hpp, calls the solve() method
+ *			from each class, and the calls printVectorTuple() to print the results
+ *
+ *			returns int
+ *
+ *	History
+ *		5/25/2024	Gus Cochran		Created Initial File
+ *		5/27/2024	Gus Cochran		Created sample test solver
+ *		6/1/2024 	Elijah Thomas	Added test for DeterminantSolver
+ *		6/3/2024	Elijah Thomas	Added test for MatrixMultiplicationSolver
+ *		6/3/2024	Kaylee Thomas	Added printVectorContent()
+ *		6/3/2024	Kaylee Thomas	Added test for RowRedcutionSolver & InverseSolver
+ *
+ *
+ * */
+
+
 #include "solvers/solvers.hpp"
 #include <stdlib.h>
 #include <iostream>
