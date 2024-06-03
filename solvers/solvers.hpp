@@ -7,8 +7,10 @@
  * 		Defines a base solver class with virtual methods and several derived solver classes with distinct behaviors.
  *
  *	Functions:
- *		solve(Matrix)
- *			Finds inverse and saves intermediary matrices and step descriptions
+ *		solve(Matrix, Matrix)
+ *			Abstract base class, inherited by derived classes that make specific determinations on what "solve" means.
+ *          Has "slots" for two matrices, though not all operations require both of these. Some solvers leave one matrix
+ *          unused at their discretions.
  *			returns result_vector object
  *
  *		verify(Matrix)
