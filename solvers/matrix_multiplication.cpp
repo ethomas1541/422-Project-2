@@ -70,7 +70,7 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> MatrixMultiplicationSolve
     return steps;
 }
 
-bool MatrixMultiplicationSolver::verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b, Matrix<float, Dynamic, Dynamic> result) {
+bool MatrixMultiplicationSolver::verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b) {
     // Ensure matrices can be multiplied
     if (a.cols() != b.rows()) {
         throw invalid_argument("Matrix dimensions do not match for multiplication.");
