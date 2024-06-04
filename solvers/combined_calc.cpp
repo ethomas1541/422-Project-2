@@ -1,3 +1,26 @@
+/*
+ *	Author: Gus Coochran & Jerin Spencer
+ *
+ *	Description:
+ *		Processes solver requests to call the appropriate solver
+ *		
+ *
+ *	Functions:
+ *		matToEigen(SolverRequest)
+ *			converts the matrix, or matricies, in a solver to the matrix in the Eigen Library
+ *
+ *			returns vector<Matrix <float, Dynamic, Dynamic>>
+ *		CombinedCalc(SolverRequest)
+ *			The namesake of the module; processes a solver request to call the correct solver
+ *
+ *			returns vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> 
+ * 
+ *
+ *	History
+ *		5/31/24		Initial creation
+ *		6/3/24
+ *
+ * */
 #include "solvers.hpp"
 #include "row_reduction.cpp"
 #include "matrix_multiplication.cpp"
