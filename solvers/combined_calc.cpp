@@ -26,12 +26,29 @@
 
 using namespace std;
 
+void splitString(string& input, char delimiter, 
+                 string arr[], int& index) 
+{ 
+    // Creating an input string stream from the input string 
+    istringstream stream(input); 
+  
+    // Temporary string to store each token 
+    string token; 
+  
+    // Read tokens from the string stream separated by the 
+    // delimiter 
+    while (getline(stream, token, delimiter)) { 
+        // Add the token to the array 
+        arr[index++] = token; 
+    } 
+} 
+
 class SolverRequest{
 public:
     string opcode;
     vector<Matrix<float, Dynamic, Dynamic>> matricies;
 
-    SolverRequest(string opcode, string a_rows, string a_cols, string a_entires, string b_rows, string b_cols, string b_entries){
+    SolverRequest(string opcode, string a_rows, string a_cols, string a_entries, string b_rows, string b_cols, string b_entries){
         this->opcode = opcode;
 
         Matrix<float, Dynamic, Dynamic> matrix_a;
@@ -42,8 +59,25 @@ public:
 		
         this->matricies.push_back(matrix_a);
         this->matricies.push_back(matrix_b);
+		string abuffer[100];
+		int aindex = 0;
+		splitString(a_entries, ',', abuffer, aindex);
+		for(int i = 0; i < stoi(a_rows) - 1; i++){
+			for(int j = 0; j < stoi(a_cols) - 1; j++){
+				matrix_a(i,j) = stoi(abuffer[i + j]);
+			}
+			
+		}
 
-		//parse entry string
+		string bbuffer[100];
+		int bindex = 0;
+		splitString(b_entries, ',', bbuffer, bindex);
+		for(int i = 0; i < stoi(b_rows) - 1; i++){
+			for(int j = 0; j < stoi(b_cols) - 1; j++){
+				matrix_b(i,j) = stoi(bbuffer[i + j]);
+			}
+			
+		}
     };
 };
 
@@ -104,7 +138,7 @@ void printVectorTuple(result_vector vt){
 	/* Prints out the contents of a vector filled with tuples to standard output*/
 	for(auto& tuple: vt){
     	unfoldMatrix(get<0>(tuple));
-		cout << get<1>(tuple) << "-";
+		cout << get<1>(tuple) << "&";
 	}
 }
 
@@ -115,4 +149,4 @@ int main(int argc, char **argv){
 
 //return for a 2x2 matrix should look like: 1,2,3,4 instructions-1,2,3,4 instructions-1,2,3,4 instructions-1,2,3,4 instructions...
 //if returning 2 matricies use $ to separate the strings ...-1,2,3,4 instructions$5,6,7,8 instructions-...
-//- is used to divide steps
+//& is used to divide steps
