@@ -86,10 +86,25 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> CombinedCalc(SolverReques
 	return ret;
 }
 
+void unfoldMatrix(Matrix<float, Dynamic, Dynamic> m){
+	for(unsigned int i = 0; i < m.rows(); i++){
+		for(unsigned int j = 0; j < m.cols(); j++){
+			float pos_i_j = m(i, j);
+			if(!i && !j){
+				cout << pos_i_j;
+			}else{
+				cout << "," << pos_i_j;
+			}
+		}
+	}
+	cout << " ";
+}
+
 void printVectorTuple(result_vector vt){
 	/* Prints out the contents of a vector filled with tuples to standard output*/
 	for(auto& tuple: vt){
-        cout << "\n" << get<0>(tuple) << "\t" << get<1>(tuple) << endl;
+    	unfoldMatrix(get<0>(tuple));
+		cout << get<1>(tuple) << "-";
 	}
 }
 
