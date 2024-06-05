@@ -38,14 +38,14 @@ using namespace Eigen;
 typedef std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> result_vector;
 
 //abstract solver class
-class Solver{
-    public:
-        virtual result_vector solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
-        virtual bool verify(Matrix <float, Dynamic, Dynamic> matrix);
-};
+// class Solver{
+//     public:
+//         virtual result_vector solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
+//         virtual bool verify(Matrix <float, Dynamic, Dynamic> matrix);
+// };
 
 //sample solver declaration
-class DerivedSolver: public Solver{
+class DerivedSolver{
     public:
         result_vector solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
         bool verify(Matrix <float, Dynamic, Dynamic> matrix);
@@ -58,20 +58,20 @@ class MatrixMultiplicationSolver{
         bool verify(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
 };
 
-class DeterminantSolver : public Solver{
+class DeterminantSolver{
     public:
         result_vector solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> m);
 };
 
-class RowReductionSolver : public Solver {
+class RowReductionSolver{
     public: 
         result_vector solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> mat);
 };
 
 // Inverse Solver
-class InverseSolver : public Solver {
+class InverseSolver{
     public: 
         result_vector solve(Matrix<float, Dynamic, Dynamic> a, Matrix<float, Dynamic, Dynamic> b);
         bool verify(Matrix<float, Dynamic, Dynamic> mat);

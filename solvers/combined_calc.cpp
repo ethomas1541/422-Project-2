@@ -22,23 +22,32 @@
  *
  * */
 #include "solvers.hpp"
-#include "row_reduction.cpp"
-#include "matrix_multiplication.cpp"
-#include "determinant.cpp"
-#include "inverse.cpp"
+#include <iostream>
 
-//it returns a vector cause there are 2 matricies in the solver
-vector<Matrix <float, Dynamic, Dynamic>> matToEigen(SolverRequest req)
-{
-	//a fucntion to convert the solver request matricies to eigen matracies
-	vector<Matrix <float, Dynamic, Dynamic>> ret; //the return
-	//needs to be filled in
+using namespace std;
 
-	return ret;
+class SolverRequest{
+public:
+    string opcode;
+    vector<Matrix<float, Dynamic, Dynamic>> matricies;
 
-}
+    SolverRequest(string opcode, string a_rows, string a_cols, string a_entires, string b_rows, string b_cols, string b_entries){
+        this->opcode = opcode;
 
-vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> CombinedCalc(SolverRequest req)
+        Matrix<float, Dynamic, Dynamic> matrix_a;
+        matrix_a.resize(stoi(a_rows), stoi(a_cols));
+
+        Matrix<float, Dynamic, Dynamic> matrix_b; 
+        matrix_a.resize(stoi(b_rows), stoi(b_cols));
+		
+        this->matricies.push_back(matrix_a);
+        this->matricies.push_back(matrix_b);
+
+		//parse entry string
+    };
+};
+
+vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> CombinedCalc(SolverRequest *req)
 {
 	//Takes a solver request and parses it for the appropriate solver
 
@@ -48,29 +57,47 @@ vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> CombinedCalc(SolverReques
 	3) put matrix into solver, then return
 	*/
 	//1)
-	vector<Matrix <float, Dynamic, Dynamic>> mats = matToEigen(req);
+	// vector<Matrix <float, Dynamic, Dynamic>> mats = matToEigen(req);
 	vector<tuple<Matrix<float, Dynamic, Dynamic>, string>> ret;
 
+	vector<Matrix<float, Dynamic, Dynamic>> mats = req->matricies;
+
 	//2 and 3 in if elif chain)
-	if(req.opcode == "row")
+	if(req->opcode == "row")
 	{
 		RowReductionSolver tool;
-		ret = tool.solve(mats[0]);
+		ret = tool.solve(mats[0], mats[1]);
 	}
-	else if(req.opcode == "mult")
+	else if(req->opcode == "mult")
 	{
 		MatrixMultiplicationSolver tool;
 		ret = tool.solve(mats[0], mats[1]);
 	}
-	else if(req.opcode == "det")
+	else if(req->opcode == "det")
 	{
 		DeterminantSolver tool;
-		ret = tool.solve(mats[0]);
+		ret = tool.solve(mats[0], mats[1]);
 	}
-	else if(req.opcode == "inv")
+	else if(req->opcode == "inv")
 	{
 		InverseSolver tool;
-		ret = tool.solve(mats[0]);
+		ret = tool.solve(mats[0], mats[1]);
 	}
 	return ret;
 }
+
+void printVectorTuple(result_vector vt){
+	/* Prints out the contents of a vector filled with tuples to standard output*/
+	for(auto& tuple: vt){
+        cout << "\n" << get<0>(tuple) << "\t" << get<1>(tuple) << endl;
+	}
+}
+
+int main(int argc, char **argv){
+	SolverRequest request(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
+	printVectorTuple(CombinedCalc(&request));
+}
+
+//return for a 2x2 matrix should look like: 1,2,3,4 instructions-1,2,3,4 instructions-1,2,3,4 instructions-1,2,3,4 instructions...
+//if returning 2 matricies use $ to separate the strings ...-1,2,3,4 instructions$5,6,7,8 instructions-...
+//- is used to divide steps
