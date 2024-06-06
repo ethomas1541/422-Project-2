@@ -2,14 +2,9 @@
  *	Author: Gus Cochran
  *
  *	Description:
- *		Expose child process and decoder nodes to renderer.js
+ *		Binds js function calls to events emitted by the objects defined
+        in index.html
  *		
- *	Functions:
- *      call_cpp(command, args):
- *              runs the provided command in console with provided args
- *      
- *      decode(encoding):
- *              decodes stdout data into a string for logging
  *	History
  *		6/3/4 initial creation
  *
