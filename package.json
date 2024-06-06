@@ -1,0 +1,24 @@
+{
+  "name": "422-project-2",
+  "productName": "Matrix Solver",
+  "version": "1.0.0",
+  "description": "Linear Algebra Solver",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^30.0.9",
+    "text-decoder": "^1.1.0",
+    "toastify-js": "^1.12.0"
+  },
+  "build": {
+    "appId": "com.cs422.MatrixSolver"
+  },
+  "extraFiles": [
+    "combined_calculator"
+  ]
+}

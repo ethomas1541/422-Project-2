@@ -26,58 +26,44 @@
 
 using namespace std;
 
-void splitString(string& input, char delimiter, 
-                 string arr[], int& index) 
-{ 
-    // Creating an input string stream from the input string 
-    istringstream stream(input); 
-  
-    // Temporary string to store each token 
-    string token; 
-  
-    // Read tokens from the string stream separated by the 
-    // delimiter 
-    while (getline(stream, token, delimiter)) { 
-        // Add the token to the array 
-        arr[index++] = token; 
-    } 
-} 
-
 class SolverRequest{
 public:
     string opcode;
     vector<Matrix<float, Dynamic, Dynamic>> matricies;
 
-    SolverRequest(string opcode, string a_rows, string a_cols, string a_entries, string b_rows, string b_cols, string b_entries){
+    SolverRequest(string opcode, char **argv){
+		int a_rows = stoi(argv[2]);
+		int a_cols = stoi(argv[3]);
+		string a_entries = argv[4];
+		int b_rows = stoi(argv[a_rows * a_cols + 1]);
+		int b_cols = stoi(argv[a_rows * a_cols + 2]);
+		string b_entries = argv[a_rows * a_cols + 3];
+
         this->opcode = opcode;
 
         Matrix<float, Dynamic, Dynamic> matrix_a;
-        matrix_a.resize(stoi(a_rows), stoi(a_cols));
+        matrix_a.resize(a_rows, a_cols);
 
         Matrix<float, Dynamic, Dynamic> matrix_b; 
-        matrix_a.resize(stoi(b_rows), stoi(b_cols));
+        matrix_a.resize(b_rows, b_cols);
 		
-        this->matricies.push_back(matrix_a);
-        this->matricies.push_back(matrix_b);
-		string abuffer[100];
-		int aindex = 0;
-		splitString(a_entries, ',', abuffer, aindex);
-		for(int i = 0; i < stoi(a_rows) - 1; i++){
-			for(int j = 0; j < stoi(a_cols) - 1; j++){
-				matrix_a(i,j) = stoi(abuffer[i + j]);
-			}
-			
-		}
+        matrix_a << 1,2,3,4,5,6,7,8,9;
+		matrix_b << 1,2,3,4,5,6,7,8,9;
 
-		string bbuffer[100];
-		int bindex = 0;
-		splitString(b_entries, ',', bbuffer, bindex);
-		for(int i = 0; i < stoi(b_rows) - 1; i++){
-			for(int j = 0; j < stoi(b_cols) - 1; j++){
-				matrix_b(i,j) = stoi(bbuffer[i + j]);
-			}
+        this->matricies.push_back(matrix_b);
+		this->matricies.push_back(matrix_a);
+		cout << matrix_a;
+		cout << matrix_b;
+		//idk
+		// string bbuffer[100];
+		// int bindex = 0;
+		// splitString(b_entries, ',', bbuffer, bindex);
+		// for(int i = 0; i < stoi(b_rows) - 1; i++){
+		// 	for(int j = 0; j < stoi(b_cols) - 1; j++){
+		// 		matrix_b(i,j) = stoi(bbuffer[i + j]);
+		// 	}
 			
-		}
+		// }
     };
 };
 
@@ -143,7 +129,7 @@ void printVectorTuple(result_vector vt){
 }
 
 int main(int argc, char **argv){
-	SolverRequest request(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
+	SolverRequest request(argv[1], argv);
 	printVectorTuple(CombinedCalc(&request));
 }
 

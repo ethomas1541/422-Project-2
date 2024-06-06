@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./renderer/style.css">
+        <script src="./renderer/renderer.js" defer></script>
+        <title>Matrix Solver</title>
+    </head>
+    <body>
+        <div class="root">
+            <div class="matrix-container">
+                <div id="a" class="matrix">
+                    <div class="matrix-grid">
+                        <div class="matrix-field"><input id="0a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="1a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="2a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="3a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="4a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="5a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="6a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="7a" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="8a" class="matrix-input" placeholder="0" type="number"></input></div>
+                    </div>
+                </div>
+                <div id="b" class="matrix">
+                    <div class="matrix-grid">
+                        <div class="matrix-field"><input id="0b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="1b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="2b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="3b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="4b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="5b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="6b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="7b" class="matrix-input" placeholder="0" type="number"></input></div>
+                        <div class="matrix-field"><input id="8b" class="matrix-input" placeholder="0" type="number"></input></div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-container">
+                <button id="deter-btn" class="solver-button">Determinant</button>
+                <button id="invr-btn" class="solver-button">Inverse</button>
+                <button id="mm-btn" class="solver-button">Multiplication</button>
+                <button id="rr-btn" class="solver-button">Row Reduction</button>
+            </div>
+            <div id="steps" class="steps-container">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

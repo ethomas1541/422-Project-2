@@ -42,14 +42,7 @@ typedef std::vector<std::tuple<Matrix<float, Dynamic, Dynamic>, std::string>> re
 //     public:
 //         virtual result_vector solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
 //         virtual bool verify(Matrix <float, Dynamic, Dynamic> matrix);
-// };
-
-//sample solver declaration
-class DerivedSolver{
-    public:
-        result_vector solve(Matrix <float, Dynamic, Dynamic> a, Matrix <float, Dynamic, Dynamic> b);
-        bool verify(Matrix <float, Dynamic, Dynamic> matrix);
-};
+// }
 
 // Matrix multiplication solver
 class MatrixMultiplicationSolver{
