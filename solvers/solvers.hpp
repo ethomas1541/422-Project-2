@@ -28,7 +28,7 @@
  *
  * */
 
-#include <eigen/Eigen/Dense>
+#include "../eigen/Eigen/Dense"
 #include <vector>
 #include <tuple>
 #include <string>
