@@ -57,8 +57,8 @@ int main(int argc, char **argv){
         // Testing Determinant Solver
         cout << "\nTesting Determinant Solver\n";
         DeterminantSolver detsolv;
-        Matrix<float, 4, 4> sample4x4 = Matrix<float, 4, 4>::Zero();
-        sample4x4 << 9, 10, 11, 10, 11, 9, 4, 2, 8, 4, 6, 9, 22, 33, 11, 22;
+        Matrix<float, 3, 3> sample4x4 = Matrix<float, 3, 3>::Zero();
+        sample4x4 << 1, 2, 3, 4, 5, 6, 7, 8, 9;
         result_vector det_result = detsolv.solve(sample4x4, sample4x4);
         printVectorTuple(det_result);
     } else if(opcode == "mm"){
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
         cout << "\nTesting Row Reduction Solver\n";
         RowReductionSolver rowredsolv;
         Matrix<float, 3, 3> rr_sample3x3 = Matrix<float, 3, 3>::Zero();
-        rr_sample3x3 << 1, 2, 0, 2,-1,2,-1,3,-2;
+        rr_sample3x3 << 1, 2, 0, 2,-1, 2,-1,3,-2;
         result_vector rr_result = rowredsolv.solve(rr_sample3x3, rr_sample3x3);
         printVectorTuple(rr_result);
         // Final matrix should be 	1, 0,  0.8
